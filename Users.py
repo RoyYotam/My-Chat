@@ -1,8 +1,9 @@
 import sqlite3
 
 ERROR_1_PHONE_IN_USE = "This phone number is already in use."
-ERROR_2_OTHER = "Other error."
-CONFIRM_REGISTER = "Welcome to My Chat!"
+ERROR_2_PHONE_DOES_NOT_EXISTS = "This phone number is not register yet."
+ERROR_3_PASSWORD_INCORRECT = "Password is incorrect."
+CONFIRM_MESSAGE = "Welcome to My Chat!"
 
 
 class UsersDatabase:
@@ -16,8 +17,8 @@ class UsersDatabase:
         The function checks all the SQl parameters are correct built.
         :return: None
         """
-        self.cur.execute("CREATE TABLE IF NOT EXISTS Users(id number (10) primary key, password, chat_list [])")
-        self.cur.execute("CREATE TABLE IF NOT EXISTS ContactCard(name, age integer, phone number (10) primary key)")
+        self.cur.execute("CREATE TABLE IF NOT EXISTS Users(id number(10) primary key, password char(64), chat_list [])")
+        self.cur.execute("CREATE TABLE IF NOT EXISTS ContactCard(name, age integer, phone number(10) primary key)")
         self.con.commit()
 
     def new_user(self, phone, password):
@@ -27,7 +28,7 @@ class UsersDatabase:
         :param password: should be encoded with EncryptData, but there is no check for password.
         :return: None
         """
-        self.cur.execute("INSERT INTO Users values(?, ?)", (phone, password))
+        self.cur.execute("INSERT INTO Users values(?, ?, ?)", (phone, password, ""))
         self.con.commit()
 
     def new_contact(self, name, age, phone):
@@ -64,9 +65,33 @@ class UsersDatabase:
         if self.check_phone(phone):
             self.new_contact(name, age, phone)
             self.new_user(phone, password)
-            return CONFIRM_REGISTER, 0
+            return CONFIRM_MESSAGE, 0
         else:
             return ERROR_1_PHONE_IN_USE, 1
+
+    def connect(self, phone, password):
+        """
+        A function made to check if user in database and if password fit the username.
+        :param phone: as a username.
+        :param password: the user password chosen at the register.
+        :return: a message of error / confirm, and the error code.
+        """
+        # Checks if the phone is in the ContactCard table
+        if not self.check_phone(phone):
+            result = self.cur.execute("SELECT password FROM Users WHERE id = %s" % phone)
+            # Checks if the phone is in Users table
+            row = result.fetchone()
+            if row is not None:
+                db_password = row[0]
+                # Checks if the password fits the username
+                if password == db_password:
+                    return CONFIRM_MESSAGE, 0
+                else:
+                    return ERROR_3_PASSWORD_INCORRECT, 3
+            else:
+                return ERROR_2_PHONE_DOES_NOT_EXISTS, 2
+        else:
+            return ERROR_2_PHONE_DOES_NOT_EXISTS, 2
 
     def finish(self):
         self.cur.close()
@@ -77,7 +102,7 @@ if __name__ == "__main__":
     # Create interface
     userDatabase = UsersDatabase()
 
-    # check if phone in use
+    # check if phone is not in use
     print(userDatabase.check_phone("1234567890"))
 
     # Try register new users.
@@ -87,8 +112,16 @@ if __name__ == "__main__":
     print(message)
     print(message2)
 
+    # Try to connect.
+    message3, status = userDatabase.connect("123456", "05123")
+    message4, status = userDatabase.connect("1234567899", "051234")
+    message5, status = userDatabase.connect("1234567899", "05123")
+
+    print(message3)
+    print(message4)
+    print(message5)
+
     userDatabase.finish()
 
 
-# TODO: connect
 # TODO: connect chats to the user 'chat_list'
