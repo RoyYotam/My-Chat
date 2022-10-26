@@ -1,7 +1,14 @@
+"""
+
+The main server holding the connection with each client using socket base on TCP protocol.
+
+"""
+
 import socket
 from _thread import *
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+# socket.SOCK_STREAM set the protocol to TCP. (Better for chat)
 server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
 IP_address = ''
@@ -82,9 +89,10 @@ def remove(connection):
 while True:
 
     """Accepts a connection request and stores two parameters,
-    conn which is a socket object for that user, and addr
-    which contains the IP address of the client that just
-    connected"""
+    conn: the socket object for that user
+    addr: contains the IP address of that client we just connected.
+    
+    note connection is made with the three-way handshake to ensure the connection."""
     conn, addr = server.accept()
 
     """Maintains a list of clients for ease of broadcasting
@@ -100,3 +108,5 @@ while True:
 
 conn.close()
 server.close()
+
+# TODO: use server.sendall() - send all size
