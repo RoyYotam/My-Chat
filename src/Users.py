@@ -9,7 +9,7 @@ CONFIRM_MESSAGE = "Welcome to My Chat!"
 
 class UsersDatabase:
     def __init__(self):
-        self.con = sqlite3.connect("databases/Users.db")
+        self.con = sqlite3.connect("../databases/Users.db")
         self.cur = self.con.cursor()
         self.validate_all()
 

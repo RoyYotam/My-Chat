@@ -3,7 +3,7 @@
 """
 
 NEW_LINE = "\n"
-DATABASE_DIR_PATH = "databases/chat_db/"
+DATABASE_DIR_PATH = "../../databases/chat_db/"
 FILE_APPEND = "a"
 FILE_CREATE = "x"
 
