@@ -21,7 +21,7 @@ def new_message_protocol(name, data, message_type):
     :param message_type: an integer, representing type of message (1 - user, 2 - Server).
     :return: The message at the protocol, encrypted.
     """
-    return (str(message_type) + "" + current_time() + name + ": " + data).encode()
+    return str(message_type) + "" + current_time() + name + ": " + data
 
 
 def current_time():
@@ -32,4 +32,8 @@ def current_time():
 
 
 if __name__ == "__main__":
-    print(new_message_protocol("roy", "message", 1))
+    # Test the message protocol, and add to file.
+    protocol_message = new_message_protocol("roy", "message", 1)
+
+    update_file(1, protocol_message)
+
