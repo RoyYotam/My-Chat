@@ -9,24 +9,21 @@ from _thread import *
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # socket.SOCK_STREAM set the protocol to TCP. (Better for chat)
+# socket.AF_INET set the Internet address family for IPv4 like '10.10.10.10' or 'www.example.com' and port an integer.
 server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
 IP_address = ''
 Port = 8080
 
-"""
-binds the server to an entered IP address and at the
-specified port number.
-The client must be aware of these parameters
-"""
+# Associate the socket with a specific network interface (IP) and port number,
+# since we use socket.AF_INET (IPv4).
 server.bind((IP_address, Port))
 
-"""
-listens for 10 active connections. This number can be
-increased as per convenience.
-"""
+
+# listens for 10 active connections.
 server.listen(10)
 
+# a list of clients currently connected.
 list_of_clients = []
 
 
@@ -89,17 +86,15 @@ def remove(connection):
 while True:
 
     """Accepts a connection request and stores two parameters,
-    conn: the socket object for that user
-    addr: contains the IP address of that client we just connected.
+    conn: the socket object for that user.
+    addr: a tuple holding the address of that user, contains the IP address and port (since we use IPv4).
     
     note connection is made with the three-way handshake to ensure the connection."""
     conn, addr = server.accept()
 
-    """Maintains a list of clients for ease of broadcasting
-    a message to all available people in the chatroom"""
     list_of_clients.append(conn)
 
-    # prints the address of the user that just connected
+    # prints the address of the user that connected
     print(addr[0] + " connected")
 
     # creates and individual thread for every user
