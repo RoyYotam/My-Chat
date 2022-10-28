@@ -65,6 +65,6 @@ if __name__ == "__main__":
     generate_encryption_key()
     message = "Hello"
     enc_m = message_encrypt(message)
-    print(enc_m)
+    print(enc_m.decode())
     dec_m = message_decrypt(enc_m)
-    print(dec_m)
+    print(dec_m.decode())

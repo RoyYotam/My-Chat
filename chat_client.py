@@ -9,15 +9,20 @@ AGE_REQUEST = "Please enter your age\n"
 ID_REQUEST = "Please enter your id\n"
 MENU = "Please choose your option:\n1) New chat\n2) Join chat"
 
-print(WELCOME_MESSAGE)
-user_name = input(NAME_REQUEST)
-user_phone = input(PHONE_REQUEST)
-user_age = input(AGE_REQUEST)
-user_id = input(ID_REQUEST)
-
-
 client = socket.socket()
-client.connect(('127.0.0.1', 8080))
+
+# Try to connect.
+while True:
+    try:
+        client.connect(('127.0.0.1', 8080))
+        break
+    except ConnectionRefusedError as e:
+        pass
+    except OSError as e:
+        pass
+
+# choose option
+print(WELCOME_MESSAGE)
 
 
 def get_message(conn):

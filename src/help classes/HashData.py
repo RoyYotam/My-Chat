@@ -25,6 +25,3 @@ class HashPassword(object):
 if __name__ == "__main__":
     code = HashPassword(input())
     print(code)
-
-if __name__ == "__main__":
-    pass
